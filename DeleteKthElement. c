@@ -1,0 +1,85 @@
+#include<stdlib.h>
+ #include<stdio.h>
+ #include<stdbool.h>
+ #include<ctype.h>
+ #define max 10
+
+typedef struct q {
+ int arr[max];
+ int front,rear;
+ } Q;
+
+void init(Q *q){
+ q->front = q->rear = 0;
+ }
+
+bool isEmpty(Q q){
+ return q.front == q.rear; 
+ }
+
+bool isFull(Q q) {
+ return q.front == (q.rear +1)%max; 
+ }
+
+bool insert(Q* q, int val)
+ {
+ if(isFull(*q)) return false;
+ q->rear = (q->rear+1)%max;
+ q->arr[q->rear] = val;
+ return true;
+ }
+
+bool delete(Q* q, int* val)
+ {
+ if(isEmpty(*q)) return false;
+ q->front = (q->front+1)%max;
+ *val=q->arr[q->front];
+ return true;
+ }
+
+void print(Q q){
+ if(isEmpty(q))return;
+ while(q.front!=q.rear ){
+ printf("%5d",q.arr[q.front=(q.front+1)%max]);
+ }
+ printf("\n");
+ }
+
+bool deleteK(Q* q,int* val,int k)
+ {
+ int j=0,s=(q->rear - q->front -1+ max)%max;
+ for(int i=0;i<k-1;i++)
+ {
+ delete(q,&j);
+ insert(q,j);
+ }
+ delete(q,&j);
+ for(int i=0;i<=s-k;i++)
+ {
+ delete(q,&j);
+ insert(q,j);
+ }
+ return true;
+ }
+
+int main(){
+ Q q;
+ init(&q);
+ insert(&q,10);
+ insert(&q,20);
+ insert(&q,30);
+ insert(&q,40);
+ insert(&q,50);
+ insert(&q,80);
+ insert(&q,70);
+ insert(&q,23);
+ insert(&q,56);
+ print(q);
+ int val;
+ delete(&q,&val);
+ print(q);
+ insert(&q,10);
+ print(q);
+ deleteK(&q,&val,3);
+ print(q);
+ }
